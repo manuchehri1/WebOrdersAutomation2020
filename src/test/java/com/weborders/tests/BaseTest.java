@@ -9,15 +9,12 @@ import com.weborders.utilities.ConfigurationReader;
 import com.weborders.utilities.Driver;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.*;
 
 import java.io.IOException;
 
 public abstract class BaseTest {
-    protected WebDriver driver = Driver.getDriver();
+    protected WebDriver driver;
     protected static ExtentReports extentReports;
     protected static ExtentHtmlReporter extentHtmlReporter;
     protected static ExtentTest extentTest;
@@ -26,6 +23,7 @@ public abstract class BaseTest {
     public void beforeTest(){
         extentReports = new ExtentReports();
         String reportPath = "";
+
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
             reportPath = System.getProperty("user.dir") + "\\test-output\\report.html";
         } else {
@@ -44,7 +42,9 @@ public abstract class BaseTest {
 
 
     @BeforeMethod
-    public void setup(){
+    @Parameters("browser")
+    public void setup(@Optional String browser){
+        driver= Driver.getDriver();
         driver.get(ConfigurationReader.getProperty("url"));
         driver.manage().window().maximize();
     }
